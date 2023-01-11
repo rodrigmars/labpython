@@ -1,16 +1,8 @@
 import os
-from sqlite3 import Connection, Cursor
 from typing import Dict
-from labpython.db import create
-
-class Login:
-
-    def __init__(self, username, email, password, phone) -> None:
-        self.username = username
-        self.email = email
-        self.password = password
-        self.phone = phone
-
+from sqlite3 import Connection, Cursor
+from infra.db import create
+from entities.login import Login
 
 def insert(login: Login) -> int:
     """

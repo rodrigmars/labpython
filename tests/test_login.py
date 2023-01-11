@@ -1,8 +1,9 @@
 import os
 import pytest
-from sqlite3 import Connection, Cursor
 from typing import Iterator
-from labpython.db import create, close
+from sqlite3 import Connection, Cursor
+from labpython.infra.db import create, close
+from labpython.entities.login import Login
 from labpython.core.login_core import insert, find_by_username
 
 def create_table_logins() -> str:
