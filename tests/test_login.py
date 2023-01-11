@@ -1,10 +1,11 @@
 import os
 import pytest
-from typing import Iterator
-from sqlite3 import Connection, Cursor
-from labpython.infra.db import create, close
+from dotenv import dotenv_values
+from typing import Iterator, Optional, Dict, Tuple
+from labpython.infra.db.sqlite_db import create_connection, close_connection
 from labpython.entities.login import Login
-from labpython.core.login_core import insert, find_by_username
+from labpython.infra.repositories.login_repository import repository
+
 
 def create_table_logins() -> str:
     return """
@@ -17,42 +18,50 @@ def create_table_logins() -> str:
         event_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         last_update DATETIME NULL);
     """
+Setup =  Tuple[Login, Dict[str, Optional[str]]]
 
 @pytest.fixture(scope="function")
-def setup() -> Iterator[Login]:
+def setup() -> Iterator[Setup]:
 
-    conn: Connection = create(os.path.join("db", "camp.db"))
+    config = dotenv_values(".env")
 
-    cur: Cursor = conn.cursor()
+    path_db_sqlite = config.get("PATH_DB_SQLITE") or ""
+
+    conn = create_connection(path_db_sqlite)
+
+    cur = conn.cursor()
 
     cur.execute("DROP TABLE IF EXISTS logins;")
 
     cur.execute(create_table_logins())
 
-    close(conn)
-
+    close_connection(conn)
+    
     yield Login(username="renanmonteiro",
                 email="renanmonteiro@bluewash.com.br",
                 password="rI0iqUjbrP",
-                phone="(66) 98201-0887")
+                phone="(66) 98201-0887"), config
 
+def test_create_login(setup: Setup):
 
-def test_create_login(setup: Login):
+    login, config = setup
 
-    login = setup
+    create, _ = repository(config)
 
-    row_id: int = insert(login)
+    row_id: int = create(login)
 
     assert row_id.__eq__(1)
 
-def test_select_login(setup: Login):
+def test_select_login(setup: Setup):
 
-    login = setup
+    login, config = setup
 
     username = "renanmonteiro"
 
-    insert(login)
+    create, find = repository(config)
 
-    result: dict = find_by_username(username)
+    create(login)
 
-    assert result.get("username", "").__eq__(username)
+    result = find(username)
+
+    assert result[1].__eq__(username)
