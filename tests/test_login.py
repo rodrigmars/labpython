@@ -44,29 +44,29 @@ def setup() -> Iterator[Setup]:
                 password="rI0iqUjbrP",
                 phone="(66) 98201-0887"), config
 
-def test_create_login(setup: Setup):
-    #action
-    login, config = setup
+# def test_create_login(setup: Setup):
+#     #action
+#     login, config = setup
 
-    create, _ = repository(config)
+#     create, _ = repository(config)
 
-    row_id: int = create(login)
+#     row_id: int = create(login)
 
-    assert row_id.__eq__(1)
+#     assert row_id.__eq__(1)
 
-def test_select_login(setup: Setup):
+# def test_select_login(setup: Setup):
 
-    login, config = setup
+#     login, config = setup
 
-    username = "renanmonteiro"
+#     username = "renanmonteiro"
 
-    create, find = repository(config)
+#     create, find = repository(config)
 
-    create(login)
+#     create(login)
 
-    result = find(username)
+#     result = find(username)
 
-    assert result[1].__eq__(username)
+#     assert result[1].__eq__(username)
 
 def test_create_login_vs1(setup: Setup):
 

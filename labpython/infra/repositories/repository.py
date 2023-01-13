@@ -2,14 +2,15 @@ from typing import Dict, Tuple, List, Callable
 from labpython.infra.db.sqlite_db import create_connection, close_connection
 
 def repository(config:dict) -> Dict[str, Callable]:
-    
 
-    def create(query: str, params: dict) -> int:
+    def send_log(message, error):
+        print(message, error)
+        pass
 
-        conn = None
-
+    def execute(query, params):
+        
+        conn = None        
         row_id: int = 0
-
         try:
 
             conn = create_connection(config.get("PATH_DB_SQLITE", ""))
@@ -23,24 +24,31 @@ def repository(config:dict) -> Dict[str, Callable]:
             row_id = cur.rowcount
 
         except Exception as ex:
-            # TO-DO Criar log funcional
-            print("ERRO >>>>>>>:", ex)
+
+            send_log("ERRO >>>>>>>:", ex)
+
         finally:
 
             close_connection(conn)
 
             return row_id
 
-    def find(query: str, data: dict) -> Tuple[int, str, str]:
-        return 1, "", ""
+    def execute_query(query, params):
+        return "",
 
-    def all() -> List[int]:
-        return [1, 2, 3, 4]
+    def create(query: str, params: dict) -> int:
+        return execute(query, params)
 
-    def edit() -> Tuple[int, str]:
-        return 1, ""
+    def find(query: str, params: dict):
+        return execute_query(query, params)
 
-    def remove() -> None:
-        pass
+    def all(query: str, params: dict):
+        return execute_query(query, params)
 
-    return {"create": create, "find": find, "all": all}
+    def edit(query: str, params: dict) -> None:
+        execute(query, params)
+
+    def remove(query: str, params: dict) -> None:
+        execute(query, params)
+
+    return {"create": create, "find": find, "all": all, "edit": edit, "remove": remove}
