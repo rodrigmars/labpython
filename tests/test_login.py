@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 from typing import Iterator, Optional, Dict, Tuple, List, Callable
 from labpython.infra.db.sqlite_db import create_connection, close_connection
 from labpython.entities.login import Login
-from labpython.infra.repositories.login_repository import repository
+from labpython.infra.repositories.repository import repository 
 from labpython.domain.login_domain import domain
 
 
@@ -68,51 +68,11 @@ def test_select_login(setup: Setup):
 
     assert result[1].__eq__(username)
 
-
-def repository_(config) -> Dict[str, Callable]:
-    
-    db_local = config.get("PATH_DB_SQLITE") or ""
-    
-    def create(query: str, login: dict) -> int:
-        return 1
-
-    def find(query: str, data: dict) -> Tuple[int, str, str]:
-        return 1, "", ""
-
-    def all() -> List[int]:
-        return [1, 2, 3, 4]
-
-    def edit() -> Tuple[int, str]:
-        return 1, ""
-
-    def remove() -> None:
-        pass
-
-    return {"create": create, "find": find, "all": all}
-
-def domain(repository: Dict[str, Callable]):
-
-    def create(login: Login) -> int:
-
-        query: str = """
-                INSERT INTO logins (username, email, password, phone) 
-                VALUES (:username, :email, :password, :phone);
-                """
-        return repository.__getitem__("create")(query, login.__dict__)
-
-    def find_by_username(username: str) -> int:
-        
-        query: str = "SELECT USERNAME, EMAIL FROM LOGIN WHERE USERNAME=:username"
-
-        return repository.__getitem__("find")(query, {"username": username})
-
-    return {"create": create, "find_by_username": find_by_username}
-
 def test_create_login_vs1(setup: Setup):
 
     login, config = setup
 
-    fn = domain(repository_(config))
+    fn = domain(repository(config))
 
     assert fn.__getitem__("create")(login).__eq__(1)
 
@@ -120,4 +80,6 @@ def test_create_login_vs2(setup: Setup):
 
     login, config = setup
 
-    assert domain(repository_(config))["create"](login).__eq__(1)
+    assert 1 == domain(repository(config))["create"](login)
+
+

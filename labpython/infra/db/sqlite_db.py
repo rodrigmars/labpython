@@ -6,8 +6,7 @@ def create_connection(database: str) -> Connection:
 
   conn.set_trace_callback(print)
   
-  return conn 
-
+  return conn
 
 def close_connection(conn) -> None:
   conn.close()
