@@ -26,6 +26,9 @@ def repository(config: dict):
                 VALUES (:username, :email, :password, :phone);
                 """
 
+            repository.create(query)
+
+
             cur = conn.cursor()
 
             cur.execute(query, login.__dict__)
