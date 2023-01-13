@@ -5,3 +5,6 @@ class Login:
         self.email = email
         self.password = password
         self.phone = phone
+
+    def dict(self):
+        return self.__dict__
