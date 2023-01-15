@@ -1,14 +1,14 @@
-from domain.entities.exame import Exame
+from labpython.domain.entities.exam import Exam
 from domain.value_objects.enum_vo import Operation
 from typing import Callable, Tuple, Any
 
 Repository = Callable[[dict[str, str]], Tuple[Callable[[
-    str, Exame], int], Callable[[str], Tuple[int, str]]]]
+    str, Exam], int], Callable[[str], Tuple[int, str]]]]
 
 
 def application(repository: Callable[[str, dict, Operation], Any]):
 
-    def create(exams: Exame) -> int:
+    def create(exams: Exam) -> int:
 
         query: str = """
                 INSERT INTO EXAMS (code, description, price) 
