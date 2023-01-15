@@ -1,4 +1,4 @@
-class Paciente:
+class Exame:
 
     def __init__(self, codigo, descricao, valor) -> None:
         self.id = None
