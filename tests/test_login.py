@@ -1,4 +1,6 @@
 import pytest
+import random
+import string
 from dotenv import dotenv_values
 from typing import Iterator, Tuple, Any
 from labpython.infra.db.sqlite_db import create_connection
@@ -54,6 +56,16 @@ def setup() -> Iterator[Setup]:
                       email="renanmonteiro@bluewash.com.br",
                       password="rI0iqUjbrP",
                       phone="(66) 98201-0887")
+
+
+def test_generate_code() -> None:
+
+    digits = 8
+
+    code = ''.join(random.choices(
+        string.ascii_uppercase + string.digits, k=digits))
+
+    assert 8 == len(code)
 
     # conn.close()
 

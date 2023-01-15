@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 from infra.db.sqlite_db import Connection, create_connection
 
 
-def main(config: dict, conn: Connection):
+def main(config: dict, conn: Connection) -> None:
 
     login = Login(username="rena2nmonteiro",
                   email="renanmon2teiro@bluewash.com.br",
@@ -17,9 +17,9 @@ def main(config: dict, conn: Connection):
 
     fn["create"](login)
 
-    sault = fn["find_by_username"]("renanmonteiro")
+    result = fn["find_by_username"]("renanmonteiro")
 
-    print(sault)
+    print(result)
 
 
 if __name__ == "__main__":
