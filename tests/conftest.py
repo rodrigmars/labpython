@@ -5,7 +5,6 @@ from dotenv import dotenv_values
 from typing import Iterator, Tuple, Callable
 from sqlite3 import connect, Connection, Cursor
 
-
 Setupe = Iterator[Tuple[Connection, Cursor, Callable[[int], str]]]
 
 def gen_code(digits: int) -> str:
@@ -15,10 +14,6 @@ def gen_code(digits: int) -> str:
 
 
 def create_tables(cur) -> None:
-
-        # DROP TABLE IF EXISTS PATIENTS;
-        # DROP TABLE IF EXISTS EXAMS;
-        # DROP TABLE IF EXISTS PATIENTS_EXAMS;
 
     cur.executescript(
         """
@@ -48,11 +43,7 @@ def create_tables(cur) -> None:
 # Arrange
 @pytest.fixture
 def setup() -> Setupe:
-
-    config = dotenv_values(".env")
-
-    path_db = config.get("PATH_DB_SQLITE") or ""
-
+    
     conn = connect(':memory:')
 
     cur = conn.cursor()
