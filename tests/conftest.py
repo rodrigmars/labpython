@@ -1,38 +1,43 @@
 import pytest
-from enum import Enum
-from labpython.infra.db.sqlite_db import create_connection
+import random
+import string
 from dotenv import dotenv_values
-from typing import Tuple, Any
+from typing import Iterator, Tuple, Callable
+from sqlite3 import connect, Connection, Cursor
 
-CreateTables = Tuple[Any, str]
 
-def create_tables(path_db:str) -> None:
+Setupe = Iterator[Tuple[Connection, Cursor, Callable[[int], str]]]
 
-    conn = create_connection(path_db)
+def gen_code(digits: int) -> str:
+    
+    return ''.join(random.choices(
+        string.ascii_uppercase + string.digits, k=digits))
 
-    cur = conn.cursor()
+
+def create_tables(cur) -> None:
+
+        # DROP TABLE IF EXISTS PATIENTS;
+        # DROP TABLE IF EXISTS EXAMS;
+        # DROP TABLE IF EXISTS PATIENTS_EXAMS;
 
     cur.executescript(
         """
         BEGIN;
-        DROP TABLE IF EXISTS PATIENTS;
-        DROP TABLE IF EXISTS EXAMS;
-        DROP TABLE IF EXISTS PATIENTS_EXAMS;
-        CREATE TABLE PATIENTS(
+        CREATE TABLE PATIENT(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             code TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL UNIQUE,
             birth_date DATETIME NOT NULL,
             event_date DATETIME DEFAULT CURRENT_TIMESTAMP,
             last_update DATETIME NULL);
-        CREATE TABLE EXAMS(
+        CREATE TABLE EXAM(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 code TEXT NOT NULL UNIQUE,
                 description TEXT NOT NULL UNIQUE,
                 price REAL NOT NULL,
                 event_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 last_update DATETIME NULL);      
-        CREATE TABLE PATIENTS_EXAMS ( 
+        CREATE TABLE PATIENT_EXAM ( 
             id_patients INTEGER NOT NULL,  
             id_exams    INTEGER NOT NULL,
             FOREIGN KEY(id_patients) REFERENCES PATIENTS(id),
@@ -40,20 +45,20 @@ def create_tables(path_db:str) -> None:
         COMMIT;
         """)
 
-    conn.close()
-
 # Arrange
 @pytest.fixture
-def setup_patients():
+def setup() -> Setupe:
 
     config = dotenv_values(".env")
 
     path_db = config.get("PATH_DB_SQLITE") or ""
 
-    create_tables(path_db)
+    conn = connect(':memory:')
 
-    conn = create_connection(path_db)
+    cur = conn.cursor()
 
-    yield conn, config
+    create_tables(cur)
+
+    yield conn, cur, gen_code
 
     conn.close()
