@@ -1,4 +1,4 @@
-from pytest import mark
+from pytest import mark, param
 from datetime import date
 from typing import Tuple, Callable, Union, List
 from sqlite3 import Connection, Cursor
@@ -9,10 +9,11 @@ def test_to_create_and_verify_exams(setup: Setup):
 
     conn, cur, gen_code = setup
 
-    sql_insert, sql_select = """
+    sql_insert = """
     INSERT INTO EXAM(CODE, TYPE, DESCRIPTION, PRICE)
     VALUES(:CODE, :TYPE, :DESCRIPTION, :PRICE)
-    """, "SELECT CODE FROM PATIENT WHERE ID =:ID;"
+    """
+    sql_select = "SELECT CODE FROM PATIENT WHERE ID =:ID;"
 
     exams: List[Tuple[str, str, str, float]] = [
         (gen_code(8), "Hematologia",
@@ -25,13 +26,15 @@ def test_to_create_and_verify_exams(setup: Setup):
          "Para detectar infecções. Feito através da coleta de secreções.",
          175.0)]
 
+    expected = 3
+
     cur.executemany(sql_insert, exams)
 
     conn.commit()
 
     (total := len(cur.execute(sql_select, (cur.lastrowid,)).fetchall()))
 
-    assert 3 >= total
+    assert expected >= total
 
 @mark.skip(reason="")
 def test_to_edit_name_and_birth_date_to_exams(setup: Setup):
@@ -42,3 +45,20 @@ def test_to_edit_name_and_birth_date_to_exams(setup: Setup):
 def test_to_delete_exams(setup: Setup):
 
     conn, cur, gen_code = setup
+
+# def get_limited_rows(size):
+#     try:
+#         connection = sqlite3.connect(':memory:')
+#         cursor = connection.cursor()
+
+#         query = """SELECT * from table"""
+#         cursor.execute(query)
+#         records = cursor.fetchmany(size)
+       
+#         cursor.close()
+
+#     except sqlite3.Error as error:
+#         print("FAILED:", error)
+#     finally:
+#         if connection:
+#             connection.close()

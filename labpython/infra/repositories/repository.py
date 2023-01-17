@@ -1,10 +1,9 @@
 from typing import Callable, Any
-from infra.db.sqlite_db import Connection
+from infra.db.sqlite_db import Cursor
 from domain.value_objects.enum_vo import Operation
 
-def repository(conn: Connection) -> Callable[[str, dict, Operation], Any]:
 
-    cur = conn.cursor()
+def repository(cur: Cursor) -> Callable[[str, dict, Operation], Any]:
 
     def execute(query: str, params: dict, operation: Operation):
 
