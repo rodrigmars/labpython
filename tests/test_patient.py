@@ -13,7 +13,6 @@ def test_to_create_and_verify_a_patient(setup: Setup):
     VALUES(:code, :name, :birth_date)
     """, "select": "SELECT CODE FROM PATIENT WHERE ID =:ID;"}
 
-
     patient: dict[str, Union[str, str, date]] = {"code": (code := gen_code(8)),
                                                  "name": "Mariane Bárbara da Silva",
                                                  "birth_date": date(2002, 12, 31)}
@@ -22,9 +21,8 @@ def test_to_create_and_verify_a_patient(setup: Setup):
 
     conn.commit()
 
-    cur.execute(sql["select"], (cur.lastrowid,))
+    assert code == cur.execute(sql["select"], (cur.lastrowid,)).fetchone()[0]
 
-    assert cur.fetchone()[0] == code
 
 def test_to_edit_name_and_birth_date_to_patient(setup: Setup):
 
@@ -56,3 +54,26 @@ def test_to_edit_name_and_birth_date_to_patient(setup: Setup):
 
     assert (result := cur.fetchone())[0] == edit_patient["name"]  \
         and edit_patient["birth_date"].__str__() == result[1]
+
+def test_to_delete_patient(setup: Setup):
+
+    conn, cur, gen_code = setup
+
+    sql = {"insert": """
+    INSERT INTO PATIENT(code, name, birth_date) 
+    VALUES(:code, :name, :birth_date);
+    """,
+           "delete": "DELETE FROM PATIENT WHERE CODE =:CODE;",
+           "select": "SELECT CODE FROM PATIENT WHERE CODE =:CODE;"}
+
+    patient: dict[str, Union[str, str, date]] = {"code": (code := gen_code(8)),
+                                                 "name": "Mariane Bárbara da Silva",
+                                                 "birth_date": date(2002, 12, 31)}
+
+    cur.execute(sql["insert"], patient)
+
+    cur.execute(sql["delete"], (code,))
+
+    conn.commit()
+
+    assert None is cur.execute(sql["select"], (code,)).fetchone()

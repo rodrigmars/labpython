@@ -27,22 +27,8 @@ def test_criando_uma_matriz():
             Franz Schubert (1797-1828)
             Johannes Brahms (1833-1897)"""
 
-        
-        
-        
         palavras = list(compositores.replace(" ","").replace("\n",""))
-        print()
-        print()
-
-        print(palavras)
-
-        print()
-
         palavras = dict(Counter(palavras))
-
-        print(palavras)
-
-        print()
 
         # print("1 - processo:", palavras)
 
@@ -50,7 +36,6 @@ def test_criando_uma_matriz():
 
         for d in sorted(palavras.items(), key=lambda x: x[1]):
             print(f"{d[0]}={d[1]}")
-
 
         palavras = []
 
