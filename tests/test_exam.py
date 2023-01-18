@@ -5,6 +5,7 @@ from sqlite3 import Connection, Cursor
 
 Setup = Tuple[Connection, Cursor, Callable[[int], str]]
 
+
 def test_to_create_and_verify_exams(setup: Setup):
 
     conn, cur, gen_code = setup
@@ -32,15 +33,44 @@ def test_to_create_and_verify_exams(setup: Setup):
 
     conn.commit()
 
-    (total := len(cur.execute(sql_select, (cur.lastrowid,)).fetchall()))
+    assert expected >= len(cur.execute(sql_select,
+                                       (cur.lastrowid,)).fetchall())
 
-    assert expected >= total
 
-@mark.skip(reason="")
+# @mark.skip(reason="")
 def test_to_edit_name_and_birth_date_to_exams(setup: Setup):
 
     conn, cur, gen_code = setup
-  
+
+    sql_insert = """
+    INSERT INTO EXAM(CODE, TYPE, DESCRIPTION, PRICE)
+    VALUES(:CODE, :TYPE, :DESCRIPTION, :PRICE)
+    """
+    sql_update = """
+    UPDATE EXAM SET LAST_UPDATE=CURRENT_TIMESTAMP, PRICE =:PRICE WHERE CODE =:CODE;
+    """
+    sql_select = "SELECT * FROM EXAM WHERE ID =:ID;"
+
+    exams: Tuple[str, str, str, float] = (code := gen_code(8), "Hematologia",
+                                          "Análise de plaquetas, leucócitos, hemácias, entre outros, feita a partir da coleta de sangue",
+                                          95.0)
+
+    print("exams", exams)
+
+    expected = 150.0
+
+    cur.execute(sql_insert, exams)
+
+    cur.execute(sql_update, (expected, code))
+
+    conn.commit()
+
+    cur.execute(sql_select, (code,))
+
+    assert expected >= cur.execute(sql_select,
+                                   (cur.lastrowid,)).fetchone()[0]
+
+
 @mark.skip(reason="")
 def test_to_delete_exams(setup: Setup):
 
@@ -54,7 +84,7 @@ def test_to_delete_exams(setup: Setup):
 #         query = """SELECT * from table"""
 #         cursor.execute(query)
 #         records = cursor.fetchmany(size)
-       
+
 #         cursor.close()
 
 #     except sqlite3.Error as error:
