@@ -27,7 +27,7 @@ def create_tables(cur) -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 code TEXT NOT NULL UNIQUE,
                 type TEXT NOT NULL UNIQUE,
-                description TEXT NOT NULL UNIQUE,
+                description TEXT NOT NULL,
                 price REAL NOT NULL,
                 event_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 last_update DATETIME NULL);
