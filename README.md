@@ -1,6 +1,6 @@
 # Labpython
 
-Labpython é um projeto experimental em fase de desenvolvimento para lidar com problemas de lógica orientado a teste.
+Labpython é parte de um projeto experimental em fase de desenvolvimento para base de dados em memória.
 
 1º Nível - Casos de testes para operações CRUD com SQLite em memória.
 
