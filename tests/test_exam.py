@@ -58,6 +58,14 @@ def test_to_edit_price_and_last_update_exams(setup: Setup):
 
     expected = 150.0
 
+    sql_insert = """
+    INSERT INTO EXAM(CODE, TYPE, DESCRIPTION, PRICE)
+    VALUES(:CODE, :TYPE, :DESCRIPTION, :PRICE)
+    """
+    exams: Tuple[str, str, str, float] = (code := gen_code(8), "Hematologia", "Análise de plaquetas,\
+                                         leucócitos, hemácias, entre outros, \
+                                            feita a partir da coleta de sangue", 95.0)
+
     cur.execute(sql_insert, exams)
 
     cur.execute(sql_update, (expected, code))
