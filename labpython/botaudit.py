@@ -1,8 +1,12 @@
 import traceback
+import logging
 import sqlite3
-import notify
 from datetime import datetime
 from typing import Optional
+
+logging.basicConfig(
+    format='%(asctime)s :: %(levelname)s :: %(funcName)s :: %(lineno)d \
+        :: %(message)s', level=logging.INFO, filename='databot.log')
 
 
 def loginUseCase(cur: sqlite3.Cursor):
@@ -86,7 +90,7 @@ if __name__ == "__main__":
             if RELOAD == trailer[0]:
                 query = "DROP TABLE IF EXISTS LOGIN_AUDIT;\n"
                 
-            query += """CREATE TABLE IF NOT EXISTS LOGIN_AUDIT(
+            query += """CREATE TAB5LE IF NOT EXISTS LOGIN_AUDIT(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             EMAIL TEXT NOT NULL UNIQUE,
             ACCESS_DATE TEXT NOT NULL,
@@ -100,10 +104,10 @@ if __name__ == "__main__":
             main(conn, cur, trailer[1])
         
         else:
-            notify.info("Não existem dados para processamento")
+            logging.info("Não existem dados para processamento")
 
     except Exception:
-        traceback.print_exc()
+        logging.error(traceback.format_exc())
 
     finally:
 
