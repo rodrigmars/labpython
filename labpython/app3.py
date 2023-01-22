@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import Cursor
 from dotenv import dotenv_values
-from use_cases.patient_use_case import patient_use_case
+from use_cases.patient_use_case import insert_new_patient
 from infra.repositories.patient_repository import patient_repository
 
 def create_table(cur: Cursor) -> None:
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         patients = [['José Carlos', '987.654.321-00', '20/10/1990', 'Av. Paulista, São Paulo'],
                      ['Jessica Santana', '123.456.789-12', '12/12/1999', 'Av. Brigadeiro, São Paulo']]
 
-        cadastro, = patient_use_case(patient_repository(cur))
+        cadastro, = insert_new_patient(patient_repository(cur))
 
         cadastro(patients[0])
 

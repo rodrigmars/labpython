@@ -16,12 +16,12 @@ def patient_repository(cur: Cursor) -> Dict[str, Callable]:
 
         return cur.fetchall()
 
-    def find_by_name(name: str) -> tuple:
-
-        return 5,
+    def find_by_name(name: str) -> None: pass
 
     def edit(id: int, patient: tuple[str]):
-        pass
+        cur.execute("""UPDATE Paciente NOME, CPF, DATA_NASCIMENTO, ENDERECO WHERE ) 
+        VALUES(:NOME, :CPF, :DATA_NASCIMENTO, :ENDERECO);""", patient)
+
 
     def delete(id: int) -> None:
         pass
