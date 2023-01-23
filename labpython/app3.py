@@ -194,16 +194,17 @@ def menu():
     def create_connection(path_db:str):
         return sqlite3.connect(path_db)
 
-
-
-    try:
-
+    def load_config() -> str:
         config = dotenv_values('.env')
 
         path_db = config.get("PATH_DATABASE") or ""
 
         if path_db == "":
             raise Exception("PATH_DATABASE não identificado")
+        return path_db
+
+
+    try:
 
         script_menu = """
             MENU PRINCIPAL
@@ -213,7 +214,7 @@ def menu():
             
             Informe uma opção: """
 
-        executa_cadastro_paciente(conn := create_connection(path_db), conn.cursor())(
+        executa_cadastro_paciente(conn := create_connection(load_config()), conn.cursor())(
             (code := main_menu(input(script_menu)), deep_menu(code))
         )
 
