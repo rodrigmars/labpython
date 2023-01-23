@@ -3,10 +3,11 @@ from typing import Any, Callable, Dict
 
 def patient_repository(cur: Cursor) -> Dict[str, Callable]:
 
-    def create(patient: list[str]):
+    def create(patient: list[str]) -> None:
 
         cur.execute("""INSERT INTO Paciente(NOME, CPF, DATA_NASCIMENTO, ENDERECO) 
         VALUES(:NOME, :CPF, :DATA_NASCIMENTO, :ENDERECO);""", patient)
+
 
     def all() -> list[Any]:
 
@@ -26,8 +27,13 @@ def patient_repository(cur: Cursor) -> Dict[str, Callable]:
     def delete(id: int) -> None:
         pass
 
+    def confirm_new_password(username: str, email: str) -> None:
+        pass
+
+
     return {"create": create,
             "all": all,
             "find_by_name": find_by_name,
             "edit": edit,
-            "delete": delete}
+            "delete": delete,
+            "confirm_new_password":confirm_new_password}
