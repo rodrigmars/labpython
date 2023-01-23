@@ -95,8 +95,9 @@ def menu():
                      "cep": "",
                      "numero": 0}
 
-            message = "Informe um código"
+            status_form = True
 
+            message = "Informe um código"
 
             def check_form(dados: Dict) -> List:
                 
@@ -117,15 +118,13 @@ def menu():
 
                 return occurrences
             
-            status = True
-            
             while True:
 
                 os.system('clear')
 
                 print(roteiro)
                 
-                if status is False:
+                if status_form is False:
                     print(">> Campos obrigatórios:")
                     for occ in check_form(dados):
                         if occ:
@@ -160,7 +159,7 @@ def menu():
                         if [] == check_form(dados):
                             break
                         
-                        status = False
+                        status_form = False
 
                     case _:
                         message = "( ˘︹˘ ) - Informe um código válido para campo"
@@ -204,6 +203,9 @@ def menu():
 
     except Exception as e:
         print(traceback.format_exc())
+    
+    except KeyboardInterrupt:
+        sys.exit(0)
 
     # while (val := input("Informe uma opção: ")) != "2":
 
