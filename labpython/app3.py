@@ -60,7 +60,7 @@ def menu():
     # print(getsizeof(main_menu), getsizeof(val))
     # print(main_menu)
     conn = ""
-    def executa_cadastro_paciente(conn):
+    def executa_cadastro_paciente(conn, cur):
         print("CHEGANDO AQUI 1")
 
         def create(dados):
@@ -171,7 +171,6 @@ def menu():
 
 
     def main_menu(val: str) -> str | None:
-        print("CHEGANDO AQUI 2")
         match val:
             case "1":
                 return "1"
@@ -187,25 +186,51 @@ def menu():
                 main_menu(
                     input("( ˘︹˘ ) - Informe um código válido de menu:"))
 
-    try:
-        
-        roteiro = """
-        MENU PRINCIPAL
+    def close_connection(conn):
 
-        1 ☀︎ Cadastro de paciente
-        2 ☽ Sair
-        
-        Informe uma opção: """
-        
-        executa_cadastro_paciente(conn)(
-            (code := main_menu(input(roteiro)), deep_menu(code))
+        if conn:
+            conn.close()
+
+    def create_connection(path_db:str):
+        return sqlite3.connect(path_db)
+
+
+
+    try:
+
+        config = dotenv_values('.env')
+
+        path_db = config.get("PATH_DATABASE") or ""
+
+        if path_db == "":
+            raise Exception("PATH_DATABASE não identificado")
+
+        script_menu = """
+            MENU PRINCIPAL
+
+            1 ☀︎ Cadastro de paciente
+            2 ☽ Sair
+            
+            Informe uma opção: """
+
+        executa_cadastro_paciente(conn := create_connection(path_db), conn.cursor())(
+            (code := main_menu(input(script_menu)), deep_menu(code))
         )
 
-    except Exception as e:
+        conn.commit()
+
+    except Exception:
         print(traceback.format_exc())
+        if conn:
+            conn.rollback()
     
     except KeyboardInterrupt:
+        close_connection(conn)   
         sys.exit(0)
+
+    finally:
+        close_connection(conn)
+
 
     # while (val := input("Informe uma opção: ")) != "2":
 
