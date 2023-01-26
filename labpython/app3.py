@@ -76,7 +76,9 @@ def menu():
 
         if option is None:
             return {}
+
         else:
+
             roteiro = """
             INFORME OS CAMPOS PARA CADASTRO\n
             1 - nome:
@@ -87,20 +89,20 @@ def menu():
             6 - número de endereço:
             7 - Confirmar:
             """
-            
+
             dados = {"nome": "",
                      "email": "",
                      "cpf": "",
                      "data_nascimento": "",
                      "cep": "",
-                     "numero": 0}
+                     "numero": ""}
 
             status_form = True
 
             message = "Informe um código"
 
             def check_form(dados: Dict) -> List:
-                
+
                 occurrences = []
 
                 if dados["nome"] == "":
